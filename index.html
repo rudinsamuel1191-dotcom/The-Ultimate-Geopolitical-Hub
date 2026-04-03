@@ -3,215 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE STRATEGIC HUB | Geo-Intel & Macro</title>
+    <title>GEO-INTEL | Terminal v2.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap');
-        
-        :root {
-            --bg-deep: #050505;
-            --accent-red: #ff3b3b;
-            --border-zinc: #27272a;
-        }
-
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-deep); 
-            color: #fafafa;
-            overflow-x: hidden;
-        }
-
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: #fafafa; }
         .mono { font-family: 'JetBrains Mono', monospace; }
-        #map { height: 600px; width: 100%; filter: grayscale(1) invert(1) contrast(0.9); }
-        .glass-panel { background: rgba(18, 18, 18, 0.7); backdrop-filter: blur(10px); border: 1px solid var(--border-zinc); }
-        .ticker-wrap { overflow: hidden; border-top: 1px solid var(--border-zinc); border-bottom: 1px solid var(--border-zinc); }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        #map { height: 550px; width: 100%; background: #0a0a0a; border-bottom: 1px solid #27272a; }
+        .glass-panel { background: rgba(18, 18, 18, 0.8); backdrop-filter: blur(8px); border: 1px solid #27272a; }
+        .feed-card:hover { border-color: #ef4444; background: #111; transition: all 0.2s ease; }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased overflow-x-hidden">
 
-    <div class="ticker-wrap bg-black py-2">
-        <div class="flex space-x-12 animate-pulse px-6 text-[10px] mono text-zinc-400 uppercase tracking-widest">
-            <span>● USD/JPY: 151.24 <span class="text-red-500">▼</span></span>
-            <span>● BRENT CRUDE: $84.12 <span class="text-green-500">▲</span></span>
-            <span>● GOLD: $2,240.50 <span class="text-green-500">▲</span></span>
-            <span>● BTC/USD: $68,412 <span class="text-zinc-500">--</span></span>
-            <span>● TSMC (2330): +2.4% <span class="text-green-500">▲</span></span>
+    <header class="p-5 flex justify-between items-center border-b border-zinc-800 sticky top-0 bg-[#050505] z-[1001]">
+        <div>
+            <h1 class="text-2xl font-black tracking-tighter">GEO<span class="text-red-600">INTEL</span></h1>
+            <p id="status-bar" class="text-[9px] mono text-zinc-500 uppercase">Monitoring Global Pulse: <span class="text-green-500 animate-pulse">Online</span></p>
         </div>
-    </div>
-
-    <header class="p-6 flex flex-col md:flex-row justify-between items-center border-b border-zinc-800">
-        <div class="mb-4 md:mb-0">
-            <h1 class="text-3xl font-black tracking-tighter leading-none">GEO<span class="text-red-600">INTEL</span></h1>
-            <p class="text-[10px] mono text-zinc-500 mt-1 uppercase">Global Power Dynamics & Economic Impact Terminal</p>
-        </div>
-        <div class="flex space-x-4">
-            <input type="text" placeholder="Search Archives..." class="bg-zinc-900 border border-zinc-700 rounded px-4 py-1 text-xs focus:outline-none focus:border-red-600">
-            <button class="bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold px-4 py-2 uppercase tracking-tighter transition-all">Submit Intel</button>
+        <div class="flex items-center space-x-4">
+            <div id="active-country" class="hidden md:block text-[10px] mono bg-zinc-900 px-3 py-1 rounded border border-zinc-700">GLOBAL VIEW</div>
+            <button class="bg-red-600 text-white text-[10px] font-bold px-4 py-2 uppercase">Log Intel</button>
         </div>
     </header>
 
-    <div class="grid grid-cols-1 xl:grid-cols-12 gap-0">
-        
-        <aside class="xl:col-span-3 border-r border-zinc-800 h-screen overflow-y-auto p-4 space-y-6">
-            <div>
-                <h2 class="text-xs font-bold text-zinc-500 uppercase mb-4 tracking-widest flex justify-between">
-                    Intelligence Feed <span class="text-red-500">Live</span>
-                </h2>
-                
-                <div class="space-y-4">
-                    <div class="glass-panel p-4 rounded-lg hover:border-zinc-500 transition cursor-pointer group">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[9px] bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded">SUBSTACK</span>
-                            <span class="text-[9px] text-zinc-600">14m ago</span>
-                        </div>
-                        <h3 class="text-sm font-bold leading-tight group-hover:text-red-500 transition">The End of Globalization 2.0</h3>
-                        <p class="text-xs text-zinc-400 mt-2 line-clamp-2">Analyzing the move toward localized manufacturing hubs in North America and Poland.</p>
-                    </div>
-
-                    <div class="glass-panel p-4 rounded-lg hover:border-zinc-500 transition cursor-pointer group border-l-2 border-l-red-600">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[9px] bg-red-950 text-red-200 px-2 py-0.5 rounded uppercase font-bold">Urgent</span>
-                            <span class="text-[9px] text-zinc-600">42m ago</span>
-                        </div>
-                        <h3 class="text-sm font-bold leading-tight group-hover:text-red-500">Strait of Malacca Congestion Index</h3>
-                        <p class="text-xs text-zinc-400 mt-2 line-clamp-2">Shipping delays hitting a 3-year high as regional tensions escalate.</p>
-                    </div>
-
-                    <div class="glass-panel p-4 rounded-lg hover:border-zinc-500 transition cursor-pointer group">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[9px] bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded">VIDEO</span>
-                            <span class="text-[9px] text-zinc-600">2h ago</span>
-                        </div>
-                        <h3 class="text-sm font-bold leading-tight group-hover:text-red-500">Demographic Collapse: East Asia</h3>
-                        <p class="text-xs text-zinc-400 mt-2 line-clamp-2">Peter Zeihan's latest deep dive into the labor shortages affecting the global supply chain.</p>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <main class="xl:col-span-6 bg-[#0a0a0a] relative">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
+        <div class="lg:col-span-8 relative">
             <div id="map"></div>
+            <div class="absolute bottom-4 left-4 z-[1000] glass-panel p-3 rounded text-[10px] mono text-zinc-400">
+                CLICK COUNTRY TO FILTER INTEL
+            </div>
+        </div>
+
+        <aside class="lg:col-span-4 h-[550px] lg:h-screen border-l border-zinc-800 flex flex-col">
+            <div class="p-4 border-b border-zinc-800 flex justify-between items-center">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-400">Intelligence Feed</h2>
+                <span id="feed-count" class="text-[10px] bg-zinc-800 px-2 py-0.5 rounded">8 New</span>
+            </div>
             
-            <div class="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-4 z-[1000]">
-                <div class="glass-panel p-4 rounded-xl">
-                    <h4 class="text-[10px] text-zinc-500 uppercase font-bold mb-1">Euro-Zone Impact</h4>
-                    <div class="flex items-center space-x-2">
-                        <div class="h-2 w-full bg-zinc-800 rounded">
-                            <div class="h-2 bg-yellow-500 rounded" style="width: 65%"></div>
-                        </div>
-                        <span class="text-xs font-bold text-yellow-500">Stable</span>
-                    </div>
+            <div id="intel-container" class="overflow-y-auto p-4 space-y-4 flex-grow">
                 </div>
-                <div class="glass-panel p-4 rounded-xl border-red-900">
-                    <h4 class="text-[10px] text-zinc-500 uppercase font-bold mb-1">Asia-Pacific Friction</h4>
-                    <div class="flex items-center space-x-2">
-                        <div class="h-2 w-full bg-zinc-800 rounded">
-                            <div class="h-2 bg-red-600 rounded" style="width: 88%"></div>
-                        </div>
-                        <span class="text-xs font-bold text-red-600">Critical</span>
-                    </div>
-                </div>
-                <div class="glass-panel p-4 rounded-xl">
-                    <h4 class="text-[10px] text-zinc-500 uppercase font-bold mb-1">U.S. Dollar Strength</h4>
-                    <div class="flex items-center space-x-2">
-                        <div class="h-2 w-full bg-zinc-800 rounded">
-                            <div class="h-2 bg-green-500 rounded" style="width: 42%"></div>
-                        </div>
-                        <span class="text-xs font-bold text-green-500">Strong</span>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <aside class="xl:col-span-3 border-l border-zinc-800 h-screen overflow-y-auto p-4 flex flex-col">
-            <h2 class="text-xs font-bold text-zinc-500 uppercase mb-4 tracking-widest">The Battleground</h2>
-            
-            <div class="flex-grow space-y-4 mb-6">
-                <div class="text-[11px] border-l border-zinc-700 pl-3 py-1">
-                    <span class="text-red-500 font-bold">@Realist_01:</span>
-                    <p class="text-zinc-300 mt-1">"The debt-to-GDP ratio in the Big 3 makes these military maneuvers purely performative. They can't afford a real conflict."</p>
-                    <div class="flex space-x-2 mt-1 text-[9px] text-zinc-600">
-                        <span>Reply</span> • <span>Agree (12)</span> • <span>Challenge (4)</span>
-                    </div>
-                </div>
-
-                <div class="text-[11px] border-l border-zinc-700 pl-3 py-1">
-                    <span class="text-blue-500 font-bold">@MacroWhiz:</span>
-                    <p class="text-zinc-300 mt-1">"Disagree. Resource scarcity (Lithium/Cobalt) creates a desperate incentive structure that overrides fiscal logic."</p>
-                </div>
-            </div>
-
-            <div class="mt-auto">
-                <textarea class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-red-600 h-24 placeholder-zinc-600" placeholder="Enter the fray with data-backed thoughts..."></textarea>
-                <button class="w-full bg-zinc-100 text-black font-bold py-2 mt-2 rounded text-[10px] uppercase hover:bg-white transition">Post Analysis</button>
-            </div>
         </aside>
-
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // CONFIGURATION: Replace these with your keys for real data integration
-        const CONFIG = {
-            NEWS_API_KEY: 'YOUR_NEWS_API_KEY_HERE',
-            ALPHA_VANTAGE_KEY: 'YOUR_ALPHA_VANTAGE_KEY_HERE'
+        // MOCK DATA: For a "Legit" feel, these would come from your Substack/RSS/News APIs
+        const intelDatabase = {
+            "Global": [
+                { type: 'SUBSTACK', title: 'The End of Globalization 2.0', source: 'https://zeihan.com/blog/', desc: 'Analyzing the shift to localized manufacturing.', time: '12m ago' },
+                { type: 'VIDEO', title: 'Energy Hegemony 2026', source: 'https://youtube.com', desc: 'New pipelines and the shift in EU energy reliance.', time: '1h ago' }
+            ],
+            "United States": [
+                { type: 'ECONOMY', title: 'The 2026 Dollar Dominance Report', source: 'https://substack.com', desc: 'Why the DXY remains the ultimate sanctuary.', time: '5m ago' },
+                { type: 'TECH', title: 'Silicon Shield: Semi-conductors', source: 'https://bloomberg.com', desc: 'New US-based fabs reaching operational status.', time: '3h ago' }
+            ],
+            "China": [
+                { type: 'MACRO', title: 'Belt and Road Debt Restructuring', source: 'https://reuters.com', desc: 'Financial shifts in East African investments.', time: '20m ago' },
+                { type: 'MILITARY', title: 'Naval Expansion in South China Sea', source: 'https://janes.com', desc: 'Satellite imagery confirms new carrier dock.', time: '5h ago' }
+            ]
         };
 
-        // INITIALIZE MAP
-        const map = L.map('map', {
-            zoomControl: false,
-            attributionControl: false,
-            center: [20, 0],
-            zoom: 2.5
-        });
-
-        // Dark-themed tiles
+        // 1. Initialize Map
+        const map = L.map('map', { zoomControl: false, attributionControl: false }).setView([20, 0], 2);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-        // DATA POINTS (FLASHPOINTS)
-        const hotZones = [
-            {coords: [24.4, 54.3], type: 'Economic', title: 'Middle East Hub Friction'},
-            {coords: [22.3, 114.1], type: 'Logistics', title: 'South China Sea Delays'},
-            {coords: [52.2, 21.0], type: 'Military', title: 'Eastern European Re-Armament'},
-            {coords: [1.3, 103.8], type: 'Hegemony', title: 'Malacca Chokepoint'}
+        // 2. Feed Management Function
+        function renderFeed(country) {
+            const container = document.getElementById('intel-container');
+            const label = document.getElementById('active-country');
+            const data = intelDatabase[country] || intelDatabase["Global"];
+            
+            label.innerText = country.toUpperCase();
+            container.innerHTML = ''; // Clear feed
+
+            data.forEach(item => {
+                container.innerHTML += `
+                    <div class="glass-panel p-4 rounded-lg feed-card group cursor-pointer border-l-2 border-l-transparent hover:border-l-red-600">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[9px] bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded">${item.type}</span>
+                            <span class="text-[9px] text-zinc-600">${item.time}</span>
+                        </div>
+                        <a href="${item.source}" target="_blank" class="text-sm font-bold block hover:text-red-500 transition mb-2">
+                            ${item.title} ↗
+                        </a>
+                        <p class="text-xs text-zinc-400 leading-relaxed">${item.desc}</p>
+                    </div>
+                `;
+            });
+        }
+
+        // 3. Interactive Markers (Using circles for better "Radar" aesthetic)
+        const pins = [
+            { name: 'United States', pos: [37.09, -95.71] },
+            { name: 'China', pos: [35.86, 104.19] },
+            { name: 'Russia', pos: [61.52, 105.31] }
         ];
 
-        hotZones.forEach(zone => {
-            const marker = L.circleMarker(zone.coords, {
-                color: '#ff3b3b',
-                fillColor: '#ff3b3b',
-                fillOpacity: 0.4,
-                radius: 12
+        pins.forEach(pin => {
+            const m = L.circleMarker(pin.pos, {
+                color: '#ef4444', radius: 10, fillOpacity: 0.5
             }).addTo(map);
-
-            marker.bindPopup(`<div class="mono text-[10px] font-bold p-1">${zone.title}<br/><span class="text-red-600">STATUS: ACTIVE WATCH</span></div>`);
             
-            // Pulsing effect
-            let growing = true;
-            setInterval(() => {
-                let currentRadius = marker.getRadius();
-                if (growing) {
-                    marker.setRadius(currentRadius + 0.2);
-                    if (currentRadius > 15) growing = false;
-                } else {
-                    marker.setRadius(currentRadius - 0.2);
-                    if (currentRadius < 10) growing = true;
-                }
-            }, 50);
+            m.on('click', () => {
+                map.flyTo(pin.pos, 4);
+                renderFeed(pin.name);
+            });
         });
 
-        // SIMULATED REAL-TIME UPDATES
-        function updateTickers() {
-            // In a real app, you would fetch from ALPHA_VANTAGE here
-            console.log("Checking for global shifts...");
-        }
-        setInterval(updateTickers, 30000);
+        // 4. Map Click (Reset to Global)
+        map.on('click', (e) => {
+            if (e.originalEvent.target.id === 'map') {
+                renderFeed("Global");
+            }
+        });
+
+        // Initial Load
+        renderFeed("Global");
     </script>
 </body>
 </html>
